@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clothing Store</title>
+
+<style>
+body {
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background:#f5f6fa;
+}
+
+header {
+  background:#2c3e50;
+  color:white;
+  padding:15px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+header h1 { margin:0; }
+
+nav button {
+  margin-left:10px;
+  padding:8px 12px;
+  border:none;
+  background:#3498db;
+  color:white;
+  cursor:pointer;
+  border-radius:5px;
+}
+
+nav button:hover { background:#2980b9; }
+
+.main {
+  display:flex;
+}
+
+.container {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap:20px;
+  padding:20px;
+  width:75%;
+}
+
+.product {
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  text-align:center;
+}
+
+
+  .product img {
+  width: 100%;
+  height: 200px;       /* same height for all */
+  object-fit: cover;   /* prevents stretching */
+  border-radius: 8px;
+}
+
+
+.product h3 { margin:10px 0; }
+
+.product button {
+  margin-top:5px;
+  padding:8px;
+  width:100%;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.add { background:#27ae60; color:white; }
+.add:hover { background:#219150; }
+
+.wishlist { background:#e67e22; color:white; }
+.wishlist:hover { background:#ca6f1e; }
+
+#cart {
+  width:25%;
+  background:white;
+  padding:15px;
+  border-left:2px solid #ddd;
+  height:100vh;
+  overflow:auto;
+}
+
+input, textarea {
+  width:100%;
+  padding:8px;
+  margin-top:5px;
+  border:1px solid #ccc;
+  border-radius:5px;
+}
+
+.place {
+  background:#2ecc71;
+  color:white;
+  margin-top:10px;
+}
+
+.place:hover { background:#27ae60; }
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>My Clothing Store</h1>
+  <nav>
+    <button onclick="viewOrders()">View Orders</button>
+    <button onclick="viewWishlist()">Wishlist</button>
+  </nav>
+</header>
+
+<div class="main">
+
+<div class="container" id="products"></div>
+
+<div id="cart">
+  <h2>Cart</h2>
+  <ul id="cartItems"></ul>
+  <h3>Total: ₹<span id="total">0</span></h3>
+
+  <h3>Order Details</h3>
+  <input type="text" id="name" placeholder="Enter Name">
+  <textarea id="address" placeholder="Enter Address"></textarea>
+  <button class="place" onclick="placeOrder()">Place Order</button>
+</div>
+
+</div>
+
+<script>
+const products = [
+{id:1,name:"T-Shirt",price:500,img:"mans-white-t-shirt.webp"},
+{id:2,name:"Dress",price:1200,img:"Dress.jpg"},
+{id:3,name:"Jeans",price:1500,img:"jeans.jpg"},
+{id:4,name:"Jacket",price:2000,img:"jacket.jpg"},
+{id:5,name:"Shirt",price:800,img:"shirt.webp"},
+{id:6,name:"Kurta",price:900,img:"kurta.jpg"},
+{id:7,name:"Hoodie",price:1800,img:"Hoodie.jpg"},
+{id:8,name:"Shorts",price:600,img:"Short.jpg"},
+{id:9,name:"Saree",price:2500,img:"sharee.jpg"}
+];
+
+let cart = [];
+let wishlist = [];
+let orders = [];
+
+function displayProducts() {
+  const container = document.getElementById("products");
+  products.forEach(p => {
+    container.innerHTML += `
+    <div class="product">
+      <img src="${p.img}">
+      <h3>${p.name}</h3>
+      <p>₹${p.price}</p>
+      <button class="add" onclick="addToCart(${p.id})">Add to Cart</button>
+      <button class="wishlist" onclick="addToWishlist(${p.id})">Wishlist</button>
+    </div>`;
+  });
+}
+
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  cart.push(product);
+  updateCart();
+}
+
+function addToWishlist(id) {
+  const product = products.find(p => p.id === id);
+  wishlist.push(product);
+  alert(product.name + " added to wishlist");
+}
+
+function updateCart() {
+  const cartItems = document.getElementById("cartItems");
+  const total = document.getElementById("total");
+  cartItems.innerHTML = "";
+  let sum = 0;
+
+  cart.forEach(item => {
+    sum += item.price;
+    cartItems.innerHTML += `<li>${item.name} - ₹${item.price}</li>`;
+  });
+
+  total.innerText = sum;
+}
+
+function placeOrder() {
+  const name = document.getElementById("name").value;
+  const address = document.getElementById("address").value;
+
+  if(cart.length === 0) return alert("Cart empty");
+  if(name === "" || address === "") return alert("Enter details");
+
+  orders.push({name, address, items:[...cart]});
+
+  alert("Order placed successfully!");
+  cart = [];
+  updateCart();
+}
+
+function viewOrders() {
+  if(orders.length === 0) return alert("No orders yet");
+  let text = "Orders:\n";
+  orders.forEach((o,i)=>{
+    text += `Order ${i+1} - ${o.name}\n`;
+  });
+  alert(text);
+}
+
+function viewWishlist() {
+  if(wishlist.length === 0) return alert("Wishlist empty");
+  let text = "Wishlist:\n";
+  wishlist.forEach(item=>{
+    text += item.name + "\n";
+  });
+  alert(text);
+}
+
+displayProducts();
+</script>
+
+</body>
+</html>
