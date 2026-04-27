@@ -1,0 +1,1 @@
+This is a simple e-commerce clothing website built using HTML, CSS, and JavaScript. It allows users to browse products, add items to cart and wishlist, and place orders by entering their name and address. The project features a clean user interface, responsive layout, and basic shopping functions, making it ideal for beginners in web development.!!
